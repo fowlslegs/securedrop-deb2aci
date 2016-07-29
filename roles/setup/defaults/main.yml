@@ -1,6 +1,9 @@
 ---
-apt_repo_url: "https://apt.freedom.press"
+fpf_repo_url: "https://apt.freedom.press"
+keyserver: "hkp://pool.sks-keyservers.net"
+golang_ppa_key_fingerprint: C73998DC9DFEA6DCF1241057308C15A29AD198E9
+golang_ppa_url: "http://ppa.launchpad.net/gophers/archive/ubuntu"
 ansible_dependencies: aptitude
 build_dependencies:
-  - golang
+  - golang-1.7
   - git

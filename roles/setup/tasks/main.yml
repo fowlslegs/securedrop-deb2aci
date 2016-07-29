@@ -8,17 +8,31 @@
 - name: Add FPF apt repo to sources.
   become: yes
   apt_repository:
-    repo: "deb {{ apt_repo_url }} {{ ansible_lsb.codename }} main"
+    repo: "deb {{ fpf_repo_url }} {{ ansible_lsb.codename }} main"
     state: present
     mode: "0644"
-    update_cache: yes
+    update_cache: no
+
+- name: Install Golang PPA signing key.
+  become: yes
+  command: apt-key adv --keyserver {{ keyserver }} --recv-keys {{ golang_ppa_key_fingerprint }}
+  register: golang_ppa_key_import
+  changed_when: "'imported: 1' in golang_ppa_key_import.stderr"
+
+- name: Add Golang PPA to sources.
+  become: yes
+  apt_repository:
+    repo: "deb {{ golang_ppa_url }} {{ ansible_lsb.codename }} main"
+    state: present
+    mode: "0644"
+    update_cache: no
 
 - name: Install build dependencies.
   become: yes
   apt:
     name: "{{ item }}"
     state: present
-    update_cache: no
+    update_cache: yes
   with_items:
     - "{{ ansible_dependencies }}"
     - "{{ build_dependencies }}"
