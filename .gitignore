@@ -1,0 +1,13 @@
+# vim
+*.un~
+*.swo
+*.swp
+
+# gopath
+go/
+
+# ansible
+*.retry
+
+# vagrant
+.vagrant/

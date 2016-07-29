@@ -1,0 +1,19 @@
+{
+  "acKind": "ImageManifest",
+  "acVersion": "0.8.6",
+  "name": "securedrop.org/aci",
+  "labels": [
+      {
+          "name": "version",
+          "value": "0.3.8"
+      },
+      {
+          "name": "arch",
+          "value": "amd64"
+      },
+      {
+          "name": "os",
+          "value": "linux"
+      }
+  ]
+}

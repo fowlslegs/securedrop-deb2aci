@@ -1,0 +1,12 @@
+---
+- name: Install the build dependencies for the SecureDrop ACI.
+  hosts: all
+  roles: 
+    - role: setup
+      tag: setup
+
+- name: Build the SecureDrop ACI.
+  hosts: all
+  roles: 
+    - role: build
+      tag: build

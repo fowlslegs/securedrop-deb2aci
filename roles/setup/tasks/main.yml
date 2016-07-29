@@ -1,0 +1,37 @@
+---
+- name: Install FPF apt repo signing key.
+  become: yes
+  apt_key:
+    state: present
+    data: "{{ lookup('file', 'fpf-signing-key.pub') }}"
+
+- name: Add FPF apt repo to sources.
+  become: yes
+  apt_repository:
+    repo: "deb {{ apt_repo_url }} {{ ansible_lsb.codename }} main"
+    state: present
+    mode: "0644"
+    update_cache: yes
+
+- name: Install build dependencies.
+  become: yes
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: no
+  with_items:
+    - "{{ ansible_dependencies }}"
+    - "{{ build_dependencies }}"
+
+- name: Upgrade all packages.
+  become: yes
+  apt:
+    upgrade: safe
+    update_cache: yes
+    # Only update if it's been 24 hours since last time
+    cache_valid_time: 86400
+
+- name: Install deb2aci.
+  command: go get github.com/fowlslegs/deb2aci
+  environment:
+    GOPATH: /vagrant/go
