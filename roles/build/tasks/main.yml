@@ -1,8 +1,5 @@
 ---
-- name: Build the ACI
-  # We have to build as root unfortunately because `apt-get download` requires
-  # root access for some reason in older versions of apt like the one that
-  # Ubuntu 14.04 is shipping
-  command: /vagrant/go/bin/deb2aci -pkg securedrop-app-code -manifest securedrop-app-code.manifest -image securedrop-app-code.aci
+- name: Build the securedrop-app-code ACI
+  command: deb2aci -pkg securedrop-app-code -manifest securedrop-app-code.manifest -image securedrop-app-code.aci
   args:
     chdir: /vagrant
