@@ -19,6 +19,8 @@
   register: golang_ppa_key_import
   changed_when: "'imported: 1' in golang_ppa_key_import.stderr"
 
+# Necessary because Ubuntu 14.04 doesn't ship go >= 1.3 which is necessary to
+# build deb2aci
 - name: Add Golang PPA to sources.
   become: yes
   apt_repository:
@@ -37,6 +39,15 @@
     - "{{ ansible_dependencies }}"
     - "{{ build_dependencies }}"
 
+# Necessary because the packaged versions of Go from the Gophers PPA do not
+# place a binary (or link to a binary) anywhere on $PATH
+- name: Add a symbolic link to go in /usr/local/bin.
+  become: yes
+  file:
+    src: /usr/lib/go-1.7/bin/go
+    dest: /usr/local/bin/go
+    state: link
+
 - name: Upgrade all packages.
   become: yes
   apt:
@@ -46,6 +57,35 @@
     cache_valid_time: 86400
 
 - name: Install deb2aci.
-  command: /usr/lib/go-1.7/bin/go get github.com/fowlslegs/deb2aci
+  command: go get github.com/fowlslegs/deb2aci
   environment:
-    GOPATH: /vagrant/go
+    # Can't use ~{{ ssh_username }} because "GOPATH entry cannot start with
+    # shell metacharacter '~'"
+    GOPATH: "/home/{{ ssh_username }}/go"
+
+- name: Add a symbolic link to deb2aci in /usr/local/bin.
+  become: yes
+  file:
+    src: "~{{ ssh_username }}/go/bin/deb2aci"
+    dest: /usr/local/bin/deb2aci
+    state: link
+
+- name: Clone the App Container Specification and Tooling repo
+  git:
+    clone: yes
+    repo: "{{ actool_repo_url }}"
+    dest: "~{{ ssh_username }}/spec"
+
+- name: Build actool.
+  command: ./build.sh
+  args:
+    chdir: "~{{ ssh_username }}/spec"
+  environment:
+    GOPATH: "/home/{{ ssh_username }}/go"
+
+- name: Add a symbolic link to actool in /usr/local/bin.
+  become: yes
+  file:
+    src: "~{{ ssh_username }}/spec/bin/actool"
+    dest: /usr/local/bin/actool
+    state: link

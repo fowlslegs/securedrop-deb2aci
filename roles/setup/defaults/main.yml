@@ -1,5 +1,6 @@
 ---
 fpf_repo_url: "https://apt.freedom.press"
+actool_repo_url: "https://github.com/appc/spec"
 keyserver: "hkp://pool.sks-keyservers.net"
 golang_ppa_key_fingerprint: C73998DC9DFEA6DCF1241057308C15A29AD198E9
 golang_ppa_url: "http://ppa.launchpad.net/gophers/archive/ubuntu"
@@ -7,3 +8,5 @@ ansible_dependencies: aptitude
 build_dependencies:
   - golang-1.7
   - git
+
+ssh_username: "{{ ansible_ssh_user }}"
